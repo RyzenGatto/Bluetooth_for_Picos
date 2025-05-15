@@ -1,3 +1,4 @@
+
 import aioble
 import bluetooth
 import asyncio
@@ -46,8 +47,11 @@ async def receive_data_task(characteristic):
             data = await characteristic.read()
             
             if data:
-                print(f"{IAM} received: {decode_message(data)}, count: {message_count}")
-                servo.duty_u16(decode_message(data))
+                msg = decode_message(data)
+                duty_str = msg.split()[1]
+                duty = int(duty_str)
+                #print(f"{IAM} received: {decode_message(data)}, count: {message_count}")
+                servo.duty_u16(duty)
                 #await characteristic.write(encode_message("Got it"))
                 await asyncio.sleep(0.5)
                 
@@ -130,5 +134,3 @@ async def main():
         await asyncio.gather(*tasks)
         
 asyncio.run(main())
-
-
